@@ -720,7 +720,7 @@ void loop() {
               delay(delayTime); 
               Serial.print("UN");
               playWav1.play("UN.wav");
-          } else if ((txtMsg.charAt(i+1)=='i') && ((txtMsg.charAt(i+2)=='o') || (txtMsg.charAt(i+2)=='e'))) { 
+          } else if ((txtMsg.charAt(i+1)=='i') && (txtMsg.charAt(i+2)=='o')) {   //works tie and tion but not patient 
               Serial.print("SH");
               playWav1.play("SH.wav");
           } else if ((txtMsg.charAt(i+1)=='u') && (txtMsg.charAt(i+2)=='a')) { 
