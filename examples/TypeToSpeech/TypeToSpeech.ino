@@ -6,9 +6,12 @@
   Open the Serial Monitor and type in words to hear see the results.
 
   created March 9 2023
-  by Walter Dunckel
+  by Walter Dunckel radiohound@gmail.com
+  Rev B with compile directives for 3.2, 3.6, 4.0 and 4.1
 
   This uses Frank Boesing's WavePlayer library in order to play 22050 Hertz wav files
+  un-zipped sound files need to be loaded to the base directory of the SDCARD
+  This has been tested to work on Teensy 3.2, 3.6, 4.0 and 4.1, with their appropritate version of Audio Shield 
   
 
 
@@ -27,6 +30,7 @@
 #define F_I2S ((((I2S0_MCR >> 24) & 0x03) == 3) ? F_PLL : F_CPU) // calculation for I2S freq on Teensy 3
 #endif
 
+
 // GUItool: begin automatically generated code
 AudioPlayWav             playWav1;     //xy=210,161
 AudioOutputI2S           outputsound;       //xy=417,124
@@ -34,6 +38,20 @@ AudioConnection          patchCord1(playWav1, 0, outputsound, 0);
 AudioConnection          patchCord2(playWav1, 0, outputsound, 1);
 AudioControlSGTL5000     sgtl5000_1;     //xy=413,177
 // GUItool: end automatically generated code
+
+#if defined(ARDUINO_TEENSY32)
+  // Use these with the Teensy 3.2 and Audio Shield (with SDCard on audio shield)
+  #define SDCARD_CS_PIN    10
+  #define SDCARD_MOSI_PIN  7
+  #define SDCARD_SCK_PIN   14
+#elif defined(ARDUINO_TEENSY40)
+  // Use these with the Teensy 4.0 and Audio Shield (with SDCard on audio shield)
+  #define SDCARD_CS_PIN    10
+  #define SDCARD_MOSI_PIN  7
+  #define SDCARD_SCK_PIN   14
+#endif 
+//All other Teensies (3.6 and 4.1) use built in SDCARD
+
 
 String txtMsg = "";                               // a string for incoming text
 unsigned int lastStringLength = txtMsg.length();  // previous length of the String
@@ -45,21 +63,52 @@ void setup() {
     ;  // wait for serial port to connect. Needed for native USB port only
   }
   
-  // send an intro:
-  //Serial.println("\n\nString  length():");
-  //Serial.println();
-
   AudioMemory(100); //was 50
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.6);
   
+#if defined(ARDUINO_TEENSY41)
+  //Teensy 4.1 code using build in SDCARD
   if (!(SD.begin(BUILTIN_SDCARD))) {
     // stop here, but print a message repetitively
     while (1) {
-      Serial.println("Unable to access the SD card");
-      delay(1000);
+      Serial.println("Unable to access the built in SD card");
+      delay(500);
     }
   }
+#elif defined(ARDUINO_TEENSY40)
+  //Teensy 4.0 code using the Audio Shield SD CARD
+  SPI.setMOSI(SDCARD_MOSI_PIN);
+  SPI.setSCK(SDCARD_SCK_PIN);
+  if (!(SD.begin(SDCARD_CS_PIN))) {
+    // stop here, but print a message repetitively
+    while (1) {
+      Serial.println("Unable to access the Audio Shield SD card");
+      delay(500);
+    }
+  } 
+#elif defined(ARDUINO_TEENSY32) 
+  //For use with Teensy 3.2 with SDCard on audio shield
+  SPI.setMOSI(SDCARD_MOSI_PIN);
+  SPI.setSCK(SDCARD_SCK_PIN);
+  if (!(SD.begin(SDCARD_CS_PIN))) {
+    // stop here, but print a message repetitively
+    while (1) {
+      Serial.println("Unable to access the Audio Shield SD card");
+      delay(500);
+    }
+  } 
+#elif defined(ARDUINO_TEENSY36)
+  //Teensy 3.6 using built in SDCARD  
+  if (!(SD.begin(BUILTIN_SDCARD))) {
+    // stop here, but print a message repetitively
+    while (1) {
+      Serial.println("Unable to access the built in SD card");
+      delay(500);
+    }
+  }
+#endif
+
   delay(1000);
   Serial.println("Type some words for me to try to speak, and press enter");
 }
