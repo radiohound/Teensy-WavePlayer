@@ -276,7 +276,7 @@ void loop() {
             i++; //skip i sound, because it is included in phoneme below
             Serial.print("EY");
             playWav1.play("EY.wav");
-          } else if (((txtMsg.charAt(i+2))=='e') || ((txtMsg.charAt(i+2))=='i')) { 
+          } else if ((txtMsg.charAt(i+2)=='e') || (txtMsg.charAt(i+2)=='i') || (txtMsg.charAt(i+2)=='y')) { 
               Serial.print("EY");  
               playWav1.play("EY.wav");
           } else if (((txtMsg.charAt(i-1))=='g') && ((txtMsg.charAt(i+1))=='l')) {
@@ -409,7 +409,7 @@ void loop() {
           } else if (txtMsg.charAt(i+1)=='r') { 
               Serial.print("E");
               playWav1.play("E.wav");
-          } else if (((txtMsg.charAt(i-2))=='t') && ((txtMsg.charAt(i-1))=='h')) {
+          } else if ((txtMsg.charAt(i-2)=='t') && (txtMsg.charAt(i-1)=='h') && ((txtMsg.charAt(i+1)==' ') || (txtMsg.charAt(i+1)=='\r'))){
               Serial.print("UH");
              playWav1.play("UH.wav");
           } else if (txtMsg.charAt(i+1)=='w') { 
@@ -436,8 +436,7 @@ void loop() {
         break;         
 
         case 'g':
-          if ((txtMsg.charAt(i+1)=='e') || (txtMsg.charAt(i+1)=='i'))  { 
-            //i++; //
+          if (((txtMsg.charAt(i+1)=='e') || (txtMsg.charAt(i+1)=='i')) && (txtMsg.charAt(i+2)!='t')) { 
             Serial.print("J");
             playWav1.play("J.wav");
           } else if (txtMsg.charAt(i+1)=='y') { 
@@ -447,6 +446,8 @@ void loop() {
               delay(delayTime);  
               Serial.print("IY");
               playWav1.play("IY.wav"); 
+          } else if (txtMsg.charAt(i+1)=='n') { 
+              //silent g -next
           } else { 
               Serial.print("G"); 
               playWav1.play("G.wav");
@@ -581,6 +582,13 @@ void loop() {
           } else if ((txtMsg.charAt(i-1)=='w') && ((txtMsg.charAt(i+1)==' ') || (txtMsg.charAt(i+1)=='\r'))) { 
               Serial.print("UW"); 
               playWav1.play("UW.wav");   
+          } else if ((txtMsg.charAt(i-1)=='d') && ((txtMsg.charAt(i+1)==' ') || (txtMsg.charAt(i+1)=='\r'))) { 
+              Serial.print("UW"); 
+              playWav1.play("UW.wav");  
+          } else if ((txtMsg.charAt(i-1)=='d') && ((txtMsg.charAt(i+1)=='e') || (txtMsg.charAt(i+2)=='s'))) { 
+              i++;
+              Serial.print("UH"); 
+              playWav1.play("UH.wav"); 
           } else if (txtMsg.charAt(i+1)=='y'){ 
               i++;
               Serial.print("OY");
@@ -602,10 +610,10 @@ void loop() {
           } else if ((txtMsg.charAt(i+1)=='n') && (txtMsg.charAt(i+2)!='e')){ 
               Serial.print("AA");
               playWav1.play("AA.wav");
-          } else if (txtMsg.charAt(i+1)=='m') { 
-              Serial.print("AH"); 
-              playWav1.play("AH.wav");
-          } else if ((txtMsg.charAt(i+2)=='e') || (txtMsg.charAt(i+2)=='i')|| (txtMsg.charAt(i+2)=='y') || (txtMsg.charAt(i+1)==' ') || (txtMsg.charAt(i+1)=='\r'))  { 
+          //} else if (txtMsg.charAt(i+1)=='m') { 
+          //    Serial.print("AH"); 
+          //    playWav1.play("AH.wav");
+          } else if ((txtMsg.charAt(i+2)=='e') || (txtMsg.charAt(i+2)=='i')|| (txtMsg.charAt(i+2)=='u') || (txtMsg.charAt(i+2)=='y') || (txtMsg.charAt(i+1)==' ') || (txtMsg.charAt(i+1)=='\r'))  { 
               Serial.print("OW");
               playWav1.play("OW.wav");
           } else if (txtMsg.charAt(i+1)=='a') {
@@ -744,13 +752,20 @@ void loop() {
         break;   
 
         case 'w':
-          if (txtMsg.charAt(i+1)=='h') {
-            i++;
-            Serial.print("WH");
-            playWav1.play("WH.wav");
+          if ((txtMsg.charAt(i+1)=='h') && (txtMsg.charAt(i+2)=='o'))  {
+            i=i+2;
+            Serial.print("_H");
+            playWav1.play("_H.wav");
+            delay(delayTime);
+            Serial.print("UX");
+            playWav1.play("UX.wav");
+          } else if (txtMsg.charAt(i+1)=='h') {
+              i++;
+              Serial.print("WH");
+              playWav1.play("WH.wav");  
           } else {
-          Serial.print("W");
-          playWav1.play("W.wav");
+              Serial.print("W");
+              playWav1.play("W.wav");
           }
           delay(delayTime);          
         break;
@@ -770,6 +785,9 @@ void loop() {
             Serial.print("IY");
             playWav1.play("IY.wav"); 
           } else if ((txtMsg.charAt(i-2)=='o') || (txtMsg.charAt(i-2)=='a') || (txtMsg.charAt(i-2)=='i') || (txtMsg.charAt(i-2)=='u') || (txtMsg.charAt(i-2)=='e')) {
+            Serial.print("IY");
+            playWav1.play("IY.wav"); 
+          } else if ((txtMsg.charAt(i-3)=='e') || (txtMsg.charAt(i-2)=='l') || (txtMsg.charAt(i-1)=='l')) {
             Serial.print("IY");
             playWav1.play("IY.wav"); 
           } else if ((txtMsg.charAt(i-1)=='l') || (txtMsg.charAt(i-1)=='r')) {
